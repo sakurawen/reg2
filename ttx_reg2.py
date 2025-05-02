@@ -620,6 +620,7 @@ if __name__ == '__main__':
             print('Using: python3 ttx_reg.py reg xxx.csv')
             exit()
         csv_path = os.path.join('csv',f'{sys.argv[2]}.csv')
+        print(f'{csv_path=}')
         with open(csv_path, 'r', encoding='utf-8') as file:
             thread_list = []
             csv_reader = csv.DictReader(file)

@@ -1,7 +1,7 @@
 reg:
 	python ttx_reg.py reg $(TAG)
 reg2:
-	python txt_reg2.py reg $(TAG)
+	python ttx_reg2.py reg $(TAG)
 check:
 	python email_checker.py $(TAG)
 check2:
