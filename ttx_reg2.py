@@ -526,7 +526,7 @@ class email_reader:
 
 
 thread_lock = Lock()
-csv_file = open('reg_%d.csv' % (int(time.time())), 'w', newline='', encoding='utf-8')
+csv_file = open(f'reg_f{sys.argv[2]}.csv', 'w', newline='', encoding='utf-8')
 
 writer = csv.writer(csv_file)
 writer.writerows(['email','status','message'])
@@ -654,7 +654,7 @@ if __name__ == '__main__':
         if not sys.argv[1] in ['reg','balance']:
             print('Using: python3 ttx_reg.py reg xxx.csv')
             exit()
-        csv_path = os.path.join('cert',f'{sys.argv[2]}.csv')
+        csv_path = os.path.join('csv',f'{sys.argv[2]}.csv')
         with open(csv_path, 'r', encoding='utf-8') as file:
             thread_list = []
             csv_reader = csv.DictReader(file)
