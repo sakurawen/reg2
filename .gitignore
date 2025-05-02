@@ -1,0 +1,5 @@
+cert
+csv
+venv
+__pycache__
+*.csv
