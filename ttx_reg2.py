@@ -526,7 +526,10 @@ class email_reader:
 
 
 thread_lock = Lock()
-thread_result = []
+csv_file = open('reg_%d.csv' % (int(time.time())), 'w', newline='', encoding='utf-8')
+
+writer = csv.writer(csv_file)
+writer.writerows(['email','status','message'])
 
 
 def thread_reg(csv_row_data,thread_index):
@@ -534,7 +537,7 @@ def thread_reg(csv_row_data,thread_index):
 
     email = csv_row_data.get('email')
     email_password = csv_row_data.get('email_password')
-    login_password = csv_row_data.get('password') or 'Qq113355!'
+    login_password = 'Qq113355!'
     proxy_info = csv_row_data.get('proxy')
     code = csv_row_data.get('code')
     cert_a_filename = 'temp_a.jpg'
@@ -542,18 +545,33 @@ def thread_reg(csv_row_data,thread_index):
 
     if not email:
         print('第%d条信息找不到邮箱 - 账号:%s' % (thread_index,email))
+        thread_lock.acquire()
+        writer.writerow([email,False,'找不到邮箱'])
+        thread_lock.release()
         return
     elif not email_password:
         print('第%d条信息找不到邮箱POP3登录密码 - 账号:%s' % (thread_index,email))
+        thread_lock.acquire()
+        writer.writerow([email,False,'找不到邮箱POP3登录密码'])
+        thread_lock.release()
         return
     elif not login_password:
         print('第%d条信息找不到登录密码 - 账号:%s' % (thread_index,email))
+        thread_lock.acquire()
+        writer.writerow([email,False,'找不到找不到登录密码邮箱'])
+        thread_lock.release()
         return
     elif not code:
         print('第%d条信息找不到邀请码 - 账号:%s' % (thread_index,email))
+        thread_lock.acquire()
+        writer.writerow([email,False,'找不到邀请码'])
+        thread_lock.release()
         return
     elif not cert_a_filename or not cert_b_filename:
-        print('第%d条信息身份证正反面文件名 - 账号:%s' % (thread_index,email))
+        print('第%d条信息找不到身份证正反面 - 账号:%s' % (thread_index,email))
+        thread_lock.acquire()
+        writer.writerow([email,False,'找不到身份证正反面文件名'])
+        thread_lock.release()
         return
 
     cert_a_path = os.path.join('cert',cert_a_filename)
@@ -561,6 +579,9 @@ def thread_reg(csv_row_data,thread_index):
 
     if not os.path.exists(cert_a_path) or not os.path.exists(cert_b_path):
         print('第%d条信息找不到身份证正反面文件 - 账号:%s' % (thread_index,email))
+        thread_lock.acquire()
+        writer.writerow([email,False,'找不到身份证正反面文件'])
+        thread_lock.release()
         return
 
     if not proxy_info:
@@ -576,22 +597,36 @@ def thread_reg(csv_row_data,thread_index):
 
         if not ttx_reg_status:
             print('账号:%s 注册失败,原因:%s'  % (email,err_message))
+            thread_lock.acquire()
+            writer.writerow([email,False,'账号:%s 注册失败,原因:%s'  % (email,err_message)])
+            thread_lock.release()
             return
+    else:
+        print('账号:%s 已注册' % (email))
 
     
     is_kyc = ttx_smart_account_imp.get_kyc_status()
 
     if is_kyc:
         print('账号:%s 已经上传了证件'  % (email))
+        thread_lock.acquire()
+        writer.writerow([email,True,'已经上传了证件'])
+        thread_lock.release()
         return
     
     upload_cert_status,err_message = ttx_smart_account_imp.upload_cert(cert_a_path,cert_b_path)
 
     if not upload_cert_status:
         print('账号:%s 上传证件失败,原因:%s'  % (email,err_message))
+        thread_lock.acquire()
+        writer.writerow([email,False,'上传证件失败,原因:%s'  % (email,err_message)])
+        thread_lock.release()
         return
     
     print('账号:%s 上传证件成功'  % (email))
+    thread_lock.acquire()
+    writer.writerow([email,True,'上传证件成功'])
+    thread_lock.release()
 
 
 def thread_get_balance(csv_row_data,thread_index):
@@ -619,8 +654,7 @@ if __name__ == '__main__':
         if not sys.argv[1] in ['reg','balance']:
             print('Using: python3 ttx_reg.py reg xxx.csv')
             exit()
-        csv_path = os.path.join('csv',f'{sys.argv[2]}.csv')
-        print(f'{csv_path=}')
+        csv_path = os.path.join('cert',f'{sys.argv[2]}.csv')
         with open(csv_path, 'r', encoding='utf-8') as file:
             thread_list = []
             csv_reader = csv.DictReader(file)
