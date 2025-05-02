@@ -1,11 +1,11 @@
 reg:
 	python ttx_reg.py reg $(TAG)
 reg2:
-	python txt_reg.py reg csv/$(TAG).csv
+	python txt_reg2.py reg $(TAG)
 check:
 	python email_checker.py $(TAG)
 check2:
-	python email_checker2.py csv/$(TAG).csv
+	python email_checker2.py $(TAG)
 balance:
 	python ttx_reg.py balance $(TAG)
 email:

@@ -619,8 +619,8 @@ if __name__ == '__main__':
         if not sys.argv[1] in ['reg','balance']:
             print('Using: python3 ttx_reg.py reg xxx.csv')
             exit()
-
-        with open(sys.argv[2], 'r', encoding='utf-8') as file:
+        csv_path = os.path.join('csv',f'{sys.argv[2]}.csv')
+        with open(csv_path, 'r', encoding='utf-8') as file:
             thread_list = []
             csv_reader = csv.DictReader(file)
             thread_index = 1

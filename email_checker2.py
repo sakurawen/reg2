@@ -9,7 +9,7 @@ import sys
 import time
 
 import requests
-
+import os
 from email.parser import Parser
 from email.header import decode_header
 from email.utils import parseaddr
@@ -243,8 +243,8 @@ if __name__ == '__main__':
         if not sys.argv[1] in ['check','ttx']:
             print('python3 ./email_checker.py check|ttx ./email_checker.csv')
             exit()
-
-        with open(sys.argv[2], 'r', encoding='utf-8') as file:
+        csv_path = os.path.join('csv',f'{sys.argv[2]}.csv')
+        with open(csv_path, 'r', encoding='utf-8') as file:
             thread_list = []
             csv_reader = csv.DictReader(file)
             
