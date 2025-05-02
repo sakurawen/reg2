@@ -537,8 +537,8 @@ def thread_reg(csv_row_data,thread_index):
     login_password = csv_row_data.get('password') or 'Qq113355!'
     proxy_info = csv_row_data.get('proxy')
     code = csv_row_data.get('code')
-    cert_a_filename = '311746192862_.pic.jpg'
-    cert_b_filename = '311746192862_.pic_thumb.jpg'
+    cert_a_filename = 'temp_a.jpg'
+    cert_b_filename = 'temp_b.jpg'
 
     if not email:
         print('第%d条信息找不到邮箱 - 账号:%s' % (thread_index,email))
